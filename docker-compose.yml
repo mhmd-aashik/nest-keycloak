@@ -11,14 +11,14 @@ services:
       KC_DB_USERNAME: keycloak
       KC_DB_PASSWORD: keycloak
     ports:
-      - "8080:8080"
+      - '8080:8080'
     volumes:
       - ./keycloak/realm-export:/opt/keycloak/data/import
     depends_on:
       keycloak-db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080 || exit 1"]
+      test: ['CMD-SHELL', 'exec 3<>/dev/tcp/localhost/8080 || exit 1']
       interval: 10s
       timeout: 5s
       retries: 10
@@ -30,14 +30,31 @@ services:
       POSTGRES_PASSWORD: keycloak
       POSTGRES_DB: keycloak
     ports:
-      - "5433:5432"
+      - '5433:5432'
     volumes:
       - keycloak_pgdata:/var/lib/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U keycloak -d keycloak"]
+      test: ['CMD-SHELL', 'pg_isready -U keycloak -d keycloak']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: todo
+      POSTGRES_PASSWORD: todo
+      POSTGRES_DB: todo_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U demo -d demo_db']
       interval: 5s
       timeout: 5s
       retries: 10
 
 volumes:
   keycloak_pgdata:
+  pgdata:
