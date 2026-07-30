@@ -10,7 +10,7 @@ export class KeycloakStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      algorithms: ['ES256'],
+      algorithms: ['RS256'],
       secretOrKeyProvider: JwksRsa.passportJwtSecret({
         cache: true,
         rateLimit: true,
