@@ -1,9 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { DRIZZLE } from 'src/db/db.module';
 import * as schema from '../db/schema';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 
 @Injectable()
 export class TodosService {
@@ -25,5 +25,14 @@ export class TodosService {
       .select()
       .from(schema.todos)
       .where(eq(schema.todos.ownerId, ownerId));
+  }
+
+  async findOne(ownerId: string, id: number) {
+    const [todo] = await this.db
+      .select()
+      .from(schema.todos)
+      .where(and(eq(schema.todos.id, id), eq(schema.todos.ownerId, ownerId)));
+    if (!todo) throw new NotFoundException(`Todo ${id} not found`);
+    return todo;
   }
 }
