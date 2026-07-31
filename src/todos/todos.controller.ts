@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Req, UseGuards, Get } from '@nestjs/common';
 import { TodosService } from './todos.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -17,5 +17,10 @@ export class TodosController {
   @Post()
   create(@Req() req: RequestWithUser, @Body() dto: CreateTodoDto) {
     return this.todosService.create(req.user?.userId, dto);
+  }
+
+  @Get()
+  findAll(@Req() req: RequestWithUser) {
+    return this.todosService.findAll(req.user?.userId);
   }
 }
