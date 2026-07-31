@@ -4,6 +4,7 @@ import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { DRIZZLE } from 'src/db/db.module';
 import * as schema from '../db/schema';
 import { and, eq } from 'drizzle-orm';
+import { UpdateTodoDto } from './dto/update-todo.dto';
 
 @Injectable()
 export class TodosService {
@@ -33,6 +34,16 @@ export class TodosService {
       .from(schema.todos)
       .where(and(eq(schema.todos.id, id), eq(schema.todos.ownerId, ownerId)));
     if (!todo) throw new NotFoundException(`Todo ${id} not found`);
+    return todo;
+  }
+
+  async update(ownerId: string, id: number, dto: UpdateTodoDto) {
+    await this.findOne(ownerId, id);
+    const [todo] = await this.db
+      .update(schema.todos)
+      .set({ ...dto, updateAt: new Date() })
+      .where(and(eq(schema.todos.id, id), eq(schema.todos.ownerId, ownerId)))
+      .returning();
     return todo;
   }
 }
