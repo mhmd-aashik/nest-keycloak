@@ -52,6 +52,6 @@ export class TodosService {
     await this.db
       .delete(schema.todos)
       .where(and(eq(schema.todos.id, id), eq(schema.todos.ownerId, ownerId)));
-    return { id };
+    return { deleted: true };
   }
 }
