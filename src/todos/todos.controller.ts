@@ -14,6 +14,7 @@ import { TodosService } from './todos.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UpdateTodoDto } from './dto/update-todo.dto';
+import { Roles, RolesGuard } from 'src/auth/roles.guard';
 
 interface RequestWithUser extends Request {
   user: {
@@ -41,6 +42,8 @@ export class TodosController {
     return this.todosService.findOne(req.user.userId, id);
   }
 
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @Patch(':id')
   update(
     @Req() req: RequestWithUser,
