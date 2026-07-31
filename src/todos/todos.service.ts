@@ -46,4 +46,12 @@ export class TodosService {
       .returning();
     return todo;
   }
+
+  async remove(ownerId: string, id: number) {
+    await this.findOne(ownerId, id);
+    await this.db
+      .delete(schema.todos)
+      .where(and(eq(schema.todos.id, id), eq(schema.todos.ownerId, ownerId)));
+    return { id };
+  }
 }

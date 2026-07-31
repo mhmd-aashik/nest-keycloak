@@ -8,6 +8,7 @@ import {
   Param,
   ParseIntPipe,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { TodosService } from './todos.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
@@ -47,5 +48,10 @@ export class TodosController {
     @Body() dto: UpdateTodoDto,
   ) {
     return this.todosService.update(req.user.userId, id, dto);
+  }
+
+  @Delete(':id')
+  remove(@Req() req: RequestWithUser, @Param('id', ParseIntPipe) id: number) {
+    return this.todosService.remove(req.user.userId, id);
   }
 }
